@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Switch } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 import { useDispatch } from 'react-redux';
 import { setFilters } from '../store/actions/recipes-action';
@@ -49,6 +50,7 @@ const FiltersScreen = props => {
             <FilterSwitch label="Lactose free" filterName={isLactoseFree} onChange={newValue => setIsLactoseFree(newValue)} />
             <FilterSwitch label="Vegan" filterName={isVegan} onChange={newValue => setIsVegan(newValue)} />
             <FilterSwitch label="Vegeterian" filterName={isVegeterian} onChange={newValue => setIsVegeterian(newValue)} />
+            <FlashMessage position="top" />
         </View>
     )
 }
@@ -67,6 +69,10 @@ FiltersScreen.navigationOptions = navigationData => {
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item title='Save' iconName='ios-save' onPress={() => {
                     navigationData.navigation.getParam('save')();
+                    showMessage({
+                        message: 'Filters saved!',
+                        type: 'info'
+                    })
                 }} />
             </HeaderButtons>
         ),

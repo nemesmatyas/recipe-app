@@ -2,6 +2,7 @@ import React, { useEffect, useCallback} from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton';
+import FlashMessage, { showMessage, hideMessage } from 'react-native-flash-message';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleFavorite } from '../store/actions/recipes-action';
@@ -46,13 +47,13 @@ const RecipeDetailScreen = props => {
             {
                 selectedRecipe.steps.map(step => <View style={styles.listItem} key={step}><Text >{step}</Text></View>)
             }
+            <FlashMessage position="top" />
         </ScrollView>
         
     )
 }
 
 RecipeDetailScreen.navigationOptions = navigationData => {
-    const recipeID = navigationData.navigation.getParam('recipeID');
     const recipeTitle = navigationData.navigation.getParam('recipeTitle');
     const toggleFavorite = navigationData.navigation.getParam('toggleFav');
     const isFavorite = navigationData.navigation.getParam('isFav');
@@ -61,7 +62,21 @@ RecipeDetailScreen.navigationOptions = navigationData => {
         headerTitle: recipeTitle,
         headerRight: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item title="FAV" iconName={isFavorite ? 'ios-star' : 'ios-star-outline'} onPress={toggleFavorite} />
+                <Item title="FAV" iconName={isFavorite ? 'ios-star' : 'ios-star-outline'} onPress={() => {
+                    toggleFavorite();
+                    if (isFavorite) {
+                        showMessage({
+                            message: 'Removed from favorites',
+                            type: 'danger'
+                        });
+                    } else {
+                        showMessage({
+                            message: 'Added to favorites!',
+                            type: 'success'
+                        });
+                    }
+                    
+                }} />
             </HeaderButtons>
         )
     }
